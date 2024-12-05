@@ -63,16 +63,14 @@ for i, row in enumerate(lines):
     for j, col in enumerate(row):
         # Find all instances of MAS that contribute to the \ shape in the X and
         # add the index of their 'A's to the list.
-        if check('MAS', i, j, lines, Direction.UP_LEFT):
-            backwards_slash_a_indices.append(get_next_indices(i, j, Direction.UP_LEFT))
-        if check('MAS', i, j, lines, Direction.DOWN_RIGHT):
-            backwards_slash_a_indices.append(get_next_indices(i, j, Direction.DOWN_RIGHT))
+        for dir in [Direction.UP_LEFT, Direction.DOWN_RIGHT]:
+            if check('MAS', i, j, lines, dir):
+                backwards_slash_a_indices.append(get_next_indices(i, j, dir))
         # Find all instances of MAS that contribute to the / shape in the X and
         # add the index of their 'A's to the list.
-        if check('MAS', i, j, lines, Direction.DOWN_LEFT):
-            forwards_slash_a_indices.append(get_next_indices(i, j, Direction.DOWN_LEFT))
-        if check('MAS', i, j, lines, Direction.UP_RIGHT):
-            forwards_slash_a_indices.append(get_next_indices(i, j, Direction.UP_RIGHT))
+        for dir in [Direction.DOWN_LEFT, Direction.UP_RIGHT]:
+            if check('MAS', i, j, lines, dir):
+                forwards_slash_a_indices.append(get_next_indices(i, j, dir))
 
 # Count the number of \ and / shapes that intersect at their 'A' char.
 print(len(list(filter(lambda b: b in forwards_slash_a_indices, backwards_slash_a_indices))))
