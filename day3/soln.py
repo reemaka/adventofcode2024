@@ -34,3 +34,4 @@ for match in matches:
     ans += r * l
 print(ans)
 
+f.close()
