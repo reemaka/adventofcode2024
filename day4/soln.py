@@ -64,7 +64,7 @@ count = 0
 for i, row in enumerate(lines):
     for j, col in enumerate(row):
         for dir in Direction:
-            if check_iter('XMAS', i, j, lines, dir):
+            if check('XMAS', i, j, lines, dir):
                 count += 1
 print(count)
 
