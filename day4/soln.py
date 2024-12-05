@@ -47,11 +47,24 @@ def check(term, i, j, grid, dir):
         return check(t, next_i, next_j, grid, dir)
     return False
 
+def check_iterative(term, i, j, grid, dir):
+    while term:
+        if i < 0 or j < 0 or i >= len(grid) or j >= len(grid[0]):
+            return False
+        if len(term) == 1:
+            return grid[i][j] == term
+        if grid[i][j] == term[0]:
+            term = term[1:]
+            i, j = get_next_indices(i, j, dir)
+        else:
+            return False
+    return False
+
 count = 0
 for i, row in enumerate(lines):
     for j, col in enumerate(row):
         for dir in Direction:
-            if check('XMAS', i, j, lines, dir):
+            if check_iter('XMAS', i, j, lines, dir):
                 count += 1
 print(count)
 
