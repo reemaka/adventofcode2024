@@ -146,6 +146,9 @@ def check_for_cycle(grid):
             return False
         next = grid[i][j]
 
+        if next == "+":
+            return True
+
         if next == "#":
             i = orig_i
             j = orig_j
@@ -161,7 +164,7 @@ def check_for_cycle(grid):
             next = grid[i][j]
 
             curr = grid[orig_i][orig_j]
-            if sym_matches_for_dir(dir, next) and (curr == "+" or (curr == "^" and not first)): 
+            if next == "+" and (curr == "+" or (curr == "^" and not first)): 
                 return True
             grid[orig_i][orig_j] = "+"
         elif orig_i != start[0] or orig_j != start[1]:
@@ -171,7 +174,37 @@ def check_for_cycle(grid):
                 grid [orig_i][orig_j] = "|"
         first = False
     return False
-    
+
+def check_for_cycle_3(grid):
+    i, j = start
+    dir = "^"
+    visited = set()
+    while in_bounds(i, j, grid):
+        orig_i = i
+        orig_j = j
+
+        if (i, j, dir) in visited:
+            return True
+        
+        visited.add((i, j, dir))
+
+        i, j = transform(i,j,dir)
+        if not in_bounds(i, j, grid):
+            return False
+        next = grid[i][j]
+        if next == "#":
+            i = orig_i
+            j = orig_j
+            if dir == "^":
+                dir = ">"
+            elif dir == ">":
+                dir = "v"
+            elif dir == "v":
+                dir = "<"
+            elif dir == "<":
+                dir = "^"
+            i, j = transform(i, j, dir)
+
 
 cycles = []
 c2 = 0
@@ -179,14 +212,13 @@ copy_lines = copy.deepcopy(orig_lines)
 i, j = start
 for r, l in enumerate(copy_lines):
     for c, cl in enumerate(l):
-        print(r,c)
         if r == i and c == j:
             continue
         if orig_lines[r][c] != '.':
             continue
         new_lines = copy.deepcopy(orig_lines)
         new_lines[r][c] = "#"
-        if check_for_cycle(new_lines):
+        if check_for_cycle_3(new_lines):
             cycles.append((r, c))
             c2 += 1
 
