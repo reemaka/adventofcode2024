@@ -18,8 +18,19 @@ def read_file():
     f.close()
     return orig_lines
 
+def in_bounds(c, r, lines):
+    return c >= 0 and r >= 0 and r < len(lines) and c < len(lines[0])
 
-def problem_1():
+def print_antinodes(antinodes, lines):
+    ans = []
+    for i, line in enumerate(lines):
+        line_arr = list(line)
+        for j, c in enumerate(line_arr):
+            if (i,j) in antinodes and c == '.':
+                line_arr[j] = '#'
+        print(''.join(line_arr))
+
+def calc_antinodes_count():
     lines = read_file()
     antennas = {}
     for i, line in enumerate(lines):
@@ -34,80 +45,53 @@ def problem_1():
         print(antenna)
         coords = antennas[antenna]
         print(coords)
-        for a in coords:
-            for b in coords:
-                if a == b:
+        for j in coords:
+            for z in coords:
+                if j == z:
                     continue
-                print(a)
-                print(b)
+                if j[1] < z[1]:
+                    a = j
+                    b = z
+                else:
+                    b = j
+                    a = z
+
+                antinodes.add(a)
+                antinodes.add(b)
+                    
                 a_r, a_c = a
                 b_r, b_c = b
                 p1_c, p2_c, p1_r, p2_r = None, None, None, None
-                antinodes.add(a)
-                antinodes.add(b)
-                if a_r <= b_r and a_c <= b_c:
-                    p1_r = a_r - abs(b_r - a_r)
-                    p1_c = a_c - abs(b_c - a_c)
-                    p2_r = b_r + abs(b_r - a_r)
-                    p2_c = b_c + abs(b_c - a_c)
-                    while p1_c >= 0 and p1_r >= 0 and p1_r < len(lines) and p1_c < len(lines[0]):
+                delta_r = abs(b_r - a_r)
+                delta_c = abs(b_c - a_c)
+                if a_r <= b_r:
+                    p1_r = a_r - delta_r
+                    p1_c = a_c - delta_c
+                    while in_bounds(p1_c, p1_r, lines):
                         antinodes.add((p1_r, p1_c))
-                        p1_r = p1_r - abs(b_r - a_r)
-                        p1_c = p1_c - abs(b_c - a_c)
-                    while p2_c >= 0 and p2_r >= 0 and p2_r < len(lines) and p2_c < len(lines[0]):
+                        p1_r = p1_r - delta_r
+                        p1_c = p1_c - delta_c
+                    p2_r = b_r + delta_r
+                    p2_c = b_c + delta_c
+                    while in_bounds(p2_c, p2_r, lines):
                         antinodes.add((p2_r, p2_c))
-                        p2_r = p2_r + abs(b_r - a_r)
-                        p2_c = p2_c + abs(b_c - a_c)
-                elif b_r <= a_r and b_c <= a_c:
-                    p1_r = b_r - abs(b_r - a_r)
-                    p1_c = b_c - abs(b_c - a_c)
-                    p2_r = a_r + abs(b_r - a_r)
-                    p2_c = a_c + abs(b_c - a_c)
-                    while p1_c >= 0 and p1_r >= 0 and p1_r < len(lines) and p1_c < len(lines[0]):
-                        antinodes.add((p1_r, p1_c))
-                        p1_r = p1_r - abs(b_r - a_r)
-                        p1_c = p1_c - abs(b_c - a_c)
-                    while p2_c >= 0 and p2_r >= 0 and p2_r < len(lines) and p2_c < len(lines[0]):
-                        antinodes.add((p2_r, p2_c))
-                        p2_r = p2_r + abs(b_r - a_r)
-                        p2_c = p2_c + abs(b_c - a_c)
-                elif a_r <= b_r and a_c >= b_c:
-                    p1_r = a_r - abs(b_r - a_r)
-                    p1_c = a_c + abs(b_c - a_c)
-                    p2_r = b_r + abs(b_r - a_r)
-                    p2_c = b_c - abs(b_c - a_c)
-                    while p1_c >= 0 and p1_r >= 0 and p1_r < len(lines) and p1_c < len(lines[0]):
-                        antinodes.add((p1_r, p1_c))
-                        p1_r = p1_r - abs(b_r - a_r)
-                        p1_c = p1_c + abs(b_c - a_c)
-                    while p2_c >= 0 and p2_r >= 0 and p2_r < len(lines) and p2_c < len(lines[0]):
-                        antinodes.add((p2_r, p2_c))
-                        p2_r = p2_r + abs(b_r - a_r)
-                        p2_c = p2_c - abs(b_c - a_c)
+                        p2_r = p2_r + delta_r
+                        p2_c = p2_c + delta_c
                 else:
-                    p1_r = b_r - abs(b_r - a_r)
-                    p1_c = b_c + abs(b_c - a_c)
-                    p2_r = a_r + abs(b_r - a_r)
-                    p2_c = a_c - abs(b_c - a_c)
-                    while p1_c >= 0 and p1_r >= 0 and p1_r < len(lines) and p1_c < len(lines[0]):
+                    p1_r = b_r - delta_r
+                    p1_c = b_c + delta_c
+                    while in_bounds(p1_c, p1_r, lines):
                         antinodes.add((p1_r, p1_c))
-                        p1_r = p1_r - abs(b_r - a_r)
-                        p1_c = p1_c + abs(b_c - a_c)
-                    while p2_c >= 0 and p2_r >= 0 and p2_r < len(lines) and p2_c < len(lines[0]):
+                        p1_r = p1_r - delta_r
+                        p1_c = p1_c + delta_c
+                    p2_r = a_r + delta_r
+                    p2_c = a_c - delta_c
+                    while in_bounds(p2_c, p2_r, lines):
                         antinodes.add((p2_r, p2_c))
-                        p2_r = p2_r + abs(b_r - a_r)
-                        p2_c = p2_c - abs(b_c - a_c)
+                        p2_r = p2_r + delta_r
+                        p2_c = p2_c - delta_c
                 
     print(len(antinodes))
+    print_antinodes(antinodes, lines)
 
-    ans = []
-    for i, line in enumerate(lines):
-        line_arr = list(line)
-        for j, c in enumerate(line_arr):
-            if (i,j) in antinodes and c == '.':
-                line_arr[j] = '#'
-        print(''.join(line_arr))
-        
-        
-
-problem_1()
+calc_antinodes_count()
