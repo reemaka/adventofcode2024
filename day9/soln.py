@@ -78,34 +78,42 @@ def part_2():
             nodes.append(Node(0, elem, True))
     
     full_sizes = set()
-    nodes_copy = copy.deepcopy(nodes)
-    for i, file_node in reversed(list(enumerate(nodes_copy))):
+    NODES_COPY = copy.deepcopy(nodes)
+    for file_node in reversed(NODES_COPY):
         if file_node.is_free:
             continue
 
+        # Exit early if we already know we don't have space for anything of this size.
         if file_node.block_size in full_sizes:
             continue
 
         moved = False
-        for j, free_node in enumerate(nodes):
+        for i, free_node in enumerate(nodes):
             if not free_node.is_free:
                 continue
-            if file_node.block_size <= free_node.block_size:
-                index_to_remove = -1
-                for k, f in reversed(list(enumerate(nodes))):
-                    if not f.is_free and f.file_id == file_node.file_id:
-                        index_to_remove = k
-                        break
-                if index_to_remove <= j:
+            if file_node.block_size > free_node.block_size:
+                continue
+
+            # Find where this node currently is in the modified list.
+            index_to_remove = None
+            for j, f in reversed(list(enumerate(nodes))):
+                if not f.is_free and f.file_id == file_node.file_id:
+                    index_to_remove = j
                     break
-                f = nodes.pop(index_to_remove)
-                nodes.insert(index_to_remove, Node(0, file_node.block_size, True))
-                nodes.insert(j, f)
-                free_node.block_size -= file_node.block_size
-                if free_node.block_size == 0:
-                    nodes.pop(j + 1)
-                moved = True
+
+            # The free node is to the right of the file node, so we can't use it.
+            if index_to_remove <= i:
                 break
+
+            f = nodes.pop(index_to_remove)
+            nodes.insert(index_to_remove, Node(0, file_node.block_size, True))
+            nodes.insert(i, f)
+            free_node.block_size -= file_node.block_size
+            if free_node.block_size == 0:
+                nodes.pop(i + 1)
+
+            moved = True
+            break
         if not moved:
             full_sizes.add(file_node.block_size)
 
