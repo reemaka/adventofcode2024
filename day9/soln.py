@@ -77,11 +77,16 @@ def part_2():
         else:
             nodes.append(Node(0, elem, True))
     
+    full_sizes = set()
     nodes_copy = copy.deepcopy(nodes)
     for i, file_node in reversed(list(enumerate(nodes_copy))):
         if file_node.is_free:
             continue
 
+        if file_node.block_size in full_sizes:
+            continue
+
+        moved = False
         for j, free_node in enumerate(nodes):
             if not free_node.is_free:
                 continue
@@ -99,7 +104,10 @@ def part_2():
                 free_node.block_size -= file_node.block_size
                 if free_node.block_size == 0:
                     nodes.pop(j + 1)
+                moved = True
                 break
+        if not moved:
+            full_sizes.add(file_node.block_size)
 
     checksum = 0
     checksum_i = 0
