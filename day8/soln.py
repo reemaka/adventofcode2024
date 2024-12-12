@@ -1,5 +1,13 @@
 import sys
 
+def read_file():
+    f = open(sys.argv[1] if len(sys.argv) > 1 else "ex.txt", "r")
+    orig_lines = []
+    for line in f:
+        orig_lines.append(line.strip())
+    f.close()
+    return orig_lines
+
 def get_ans_coords():
     f = open("ex_ans.txt", "r")
     orig_lines = []
@@ -9,14 +17,6 @@ def get_ans_coords():
             if c == "#":
                 coords.append((i,j))
     return coords
-
-def read_file():
-    f = open(sys.argv[1] if len(sys.argv) > 1 else "ex.txt", "r")
-    orig_lines = []
-    for line in f:
-        orig_lines.append(line.strip())
-    f.close()
-    return orig_lines
 
 def in_bounds(c, r, lines):
     return c >= 0 and r >= 0 and r < len(lines) and c < len(lines[0])
