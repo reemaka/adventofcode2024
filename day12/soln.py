@@ -29,18 +29,14 @@ def calc_perim(grid, region, label):
     perim = 0
     for i, j in region:
         perim += 4
-        if i - 1 >= 0:
-            if grid[i-1][j] == label:
-                perim -= 1
-        if j - 1 >= 0:
-            if grid[i][j-1] == label:
-                perim -= 1
-        if i + 1 < len(grid):
-            if grid[i + 1][j] == label:
-                perim -= 1
-        if j + 1 < len(grid[0]):
-            if grid[i][j+1] == label:
-                perim -= 1
+        if i - 1 >= 0 and grid[i-1][j] == label:
+            perim -= 1
+        if j - 1 >= 0 and grid[i][j-1] == label:
+            perim -= 1
+        if i + 1 < len(grid) and grid[i+1][j] == label:
+            perim -= 1
+        if j + 1 < len(grid[0]) and grid[i][j+1] == label:
+            perim -= 1
     return perim
 
 def calc_sides(grid, region, label):
@@ -80,7 +76,6 @@ def p2():
         for j, c in enumerate(line):
             region = calc_area(lines, area_visited, i, j, c)
             sides = calc_sides(lines, region, c)
-            print(sides)
             sum += len(region) * sides
     print(sum)
 
