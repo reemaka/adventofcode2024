@@ -8,7 +8,7 @@ def read_file():
     f.close()
     return lines
 
-def calc_area(grid, visited, i, j, label):
+def get_region(grid, visited, i, j, label):
     if i < 0 or j < 0 or i >= len(grid) or j >= len(grid[0]):
         return set()
     if label != grid[i][j]:
@@ -19,10 +19,10 @@ def calc_area(grid, visited, i, j, label):
     visited.add((i, j))
     area = set()
     area.add((i,j))
-    area |= calc_area(grid, visited, i - 1, j, label)
-    area |= calc_area(grid, visited, i + 1, j, label)
-    area |= calc_area(grid, visited, i, j - 1, label)
-    area |= calc_area(grid, visited, i , j + 1, label) 
+    area |= get_region(grid, visited, i - 1, j, label)
+    area |= get_region(grid, visited, i + 1, j, label)
+    area |= get_region(grid, visited, i, j - 1, label)
+    area |= get_region(grid, visited, i , j + 1, label) 
     return area
 
 def calc_perim(grid, region, label):
@@ -62,7 +62,7 @@ def p1():
     area_visited = set()
     for i, line in enumerate(lines):
         for j, c in enumerate(line):
-            region = calc_area(lines, area_visited, i, j, c)
+            region = get_region(lines, area_visited, i, j, c)
             perim = calc_perim(lines, region, c)
             sum += len(region) * perim
     print(sum)
@@ -74,7 +74,7 @@ def p2():
     area_visited = set()
     for i, line in enumerate(lines):
         for j, c in enumerate(line):
-            region = calc_area(lines, area_visited, i, j, c)
+            region = get_region(lines, area_visited, i, j, c)
             sides = calc_sides(lines, region, c)
             sum += len(region) * sides
     print(sum)
