@@ -14,7 +14,6 @@ def print_grid(filename, width, height, robot_positions):
     im = Image.new('RGB', (101, 103), "black")
     pixels = im.load()
     for y in range(height):
-        res_line = []
         for x in range(width):
             if (x, y) in robot_positions:
                 pixels[x,y] = (0, 255, 0)
